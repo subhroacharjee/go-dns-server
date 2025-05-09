@@ -46,7 +46,7 @@ func (s *DNSServer) Serve() error {
 			ID:      recievedPacket.Header.ID,
 			Flag:    message.NewFlag([]byte{0x00, 0x00}),
 			QDCount: uint16(qdcount),
-			ANCount: 0,
+			ANCount: 1,
 			NSCount: 0,
 			ARCount: 0,
 		}
@@ -56,6 +56,7 @@ func (s *DNSServer) Serve() error {
 		msg := message.Message{
 			Header:   header,
 			Question: recievedPacket.Question,
+			Answer:   message.NewAnswer(recievedPacket.Question),
 		}
 
 		if _, err := udpConn.WriteToUDP(msg.Marshal(), source); err != nil {

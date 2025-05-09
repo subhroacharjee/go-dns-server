@@ -2,7 +2,6 @@ package message
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 )
 
@@ -45,21 +44,18 @@ type Question struct {
 	_class []byte
 }
 
-func ParseQuestion(buf []byte) (*Question, []byte) {
+func ParseQuestion(buf []byte) *Question {
 	// for now assume it exists
 	name, rem, _ := bytes.Cut(buf, []byte{0x00})
 
 	qtype := rem[:2]
 	qclass := rem[2:4]
 
-	remBuf := rem[4:]
-	fmt.Println(buf)
-
 	// fmt.Println(">>>>>", len(name))
 
 	var nameBuilder strings.Builder
 	for i := 0; i < len(name); i++ {
-		fmt.Println(i)
+		// fmt.Println(i)
 		labelSize := int(name[i]) + i
 		i++
 
@@ -86,7 +82,7 @@ func ParseQuestion(buf []byte) (*Question, []byte) {
 		_type:  qtype,
 		Class:  RecordClass(ByteToUint16(qclass)),
 		_class: qclass,
-	}, remBuf
+	}
 }
 
 func (q Question) Marshal() []byte {
@@ -96,6 +92,6 @@ func (q Question) Marshal() []byte {
 	copy(buf[:l1], q._name)
 	copy(buf[l1:l1+2], q._type)
 	copy(buf[l1+2:l1+4], q._class)
-	fmt.Println(buf)
+	// fmt.Println(buf)
 	return buf
 }
