@@ -44,7 +44,7 @@ func (s *DNSServer) Serve() error {
 
 		header := &message.Header{
 			ID:      recievedPacket.Header.ID,
-			Flag:    message.NewFlag([]byte{0x00, 0x00}),
+			Flag:    recievedPacket.Header.Flag,
 			QDCount: uint16(qdcount),
 			ANCount: 1,
 			NSCount: 0,
