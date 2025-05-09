@@ -1,7 +1,5 @@
 package message
 
-import "fmt"
-
 type Message struct {
 	Header   *Header
 	Question *Question
@@ -30,7 +28,7 @@ func (m Message) Marshal() []byte {
 	// copy(buf[sz:sz+len(answer)], answer)
 	//
 	buf = append(buf, m.Answer.Marsal()...)
-	fmt.Println(buf)
+	// fmt.Println(buf)
 
 	return buf
 }

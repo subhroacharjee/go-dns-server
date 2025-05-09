@@ -52,6 +52,14 @@ func (s *DNSServer) Serve() error {
 		}
 
 		header.Flag.SetQR(true)
+		header.Flag.SetOPCode(recievedPacket.Header.Flag.GetOPCode())
+		fmt.Println(recievedPacket.Header.Flag.GetOPCode())
+
+		fmt.Println(">>>>", recievedPacket.Header.Flag.GetRD())
+
+		if recievedPacket.Header.Flag.GetOPCode() != message.QUERY {
+			header.Flag.SetRCode(message.RCodeNotImp)
+		}
 
 		msg := message.Message{
 			Header:   header,

@@ -49,7 +49,7 @@ func (f *Flag) SetQR(flag bool) {
 }
 
 func (f Flag) GetOPCode() OPCode {
-	return OPCode(f.flagByte[0] >> 4 & 0x07)
+	return OPCode((f.flagByte[0] >> 3) & 0x0F)
 }
 
 func (f *Flag) SetOPCode(opcode OPCode) {
@@ -81,7 +81,7 @@ func (f *Flag) SetTC(flag bool) {
 }
 
 func (f Flag) GetRD() bool {
-	return f.flagByte[0]&(1<<0) != 0
+	return (f.flagByte[0] & (1 << 0)) != 0
 }
 
 func (f *Flag) SetRD(flag bool) {
@@ -118,5 +118,6 @@ func (f Flag) GetRCode() RCode {
 }
 
 func (f *Flag) SetRCode(rcode RCode) {
-	f.flagByte[1] = f.flagByte[1] & (0xF0 + byte(rcode))
+	f.flagByte[1] = f.flagByte[1] & (0xF0)
+	f.flagByte[1] = f.flagByte[1] | (byte(rcode))
 }
