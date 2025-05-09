@@ -28,6 +28,7 @@ func (s *DNSServer) Serve() error {
 	buf := make([]byte, 512)
 
 	for {
+
 		size, source, err := udpConn.ReadFromUDP(buf)
 		if err != nil {
 			fmt.Println("Error receiving data:", err)
@@ -36,10 +37,15 @@ func (s *DNSServer) Serve() error {
 
 		recievedPacket := message.ParseMessage(buf[:size])
 
+		qdcount := 0
+		if recievedPacket.Question != nil {
+			qdcount = 1
+		}
+
 		header := &message.Header{
 			ID:      recievedPacket.Header.ID,
 			Flag:    message.NewFlag([]byte{0x00, 0x00}),
-			QDCount: 0,
+			QDCount: uint16(qdcount),
 			ANCount: 0,
 			NSCount: 0,
 			ARCount: 0,
@@ -48,7 +54,8 @@ func (s *DNSServer) Serve() error {
 		header.Flag.SetQR(true)
 
 		msg := message.Message{
-			Header: header,
+			Header:   header,
+			Question: recievedPacket.Question,
 		}
 
 		if _, err := udpConn.WriteToUDP(msg.Marshal(), source); err != nil {
